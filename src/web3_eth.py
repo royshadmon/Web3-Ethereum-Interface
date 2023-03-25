@@ -100,19 +100,31 @@ class Web3_Eth:
             contract_instance['bin'] = f.read()
         return contract_instance
 
-    def deploy_contract(self, interface, account_private_key, constructor_params=None):
+    def deploy_contract(self, interface, account_private_key, *constructor_params, value=0):
         user = self.get_eth_user(account_private_key)
 
         if not self.w3.is_address(user.address):
             print(f'Account not valid')
             exit(-1)
 
+        # transaction = self.w3.eth.contract(abi=interface['abi'],
+        #     bytecode=interface['bin']).constructor().build_transaction(
+        #     {
+        #         'chainId': 1337,  # Ganache chain id
+        #         'nonce': self.getTransactionCount(user),
+        #         # 'value': 0,
+        #     }
+        # )
+
+        # ContractInit = self.w3.eth.contract(abi=interface['abi'],bytecode=interface['bin']).constructor(*[type(arg) for arg in constructor_params])
+        # ContractInit = ContractInit.encode_input(constructor_params)
+
         transaction = self.w3.eth.contract(abi=interface['abi'],
-            bytecode=interface['bin']).constructor().build_transaction(
+            bytecode=interface['bin']).constructor(*constructor_params).build_transaction(
             {
                 'chainId': 1337,  # Ganache chain id
                 'nonce': self.getTransactionCount(user),
-                # 'value': 0,
+                'value': value,
             }
         )
 
