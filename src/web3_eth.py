@@ -49,12 +49,7 @@ class Web3_Eth:
         id, interface = compiled.popitem()
         return id, interface
 
-        # tx_hash = self.w3.eth.contract(
-        #     abi=interface['abi'],
-        #     bytecode=interface['bin']).constructor().transact()
-        #
-        #
-        # address = self.w3.eth.get_transaction_receipt(tx_hash)['contractAddress']
+
         store_var_contract = self.w3.eth.contract(address=address, abi=interface["abi"])
 
         transaction = store_var_contract.functions.register().build_transaction(
@@ -75,22 +70,7 @@ class Web3_Eth:
 
         print(store_var_contract.events.EM_CREATED().process_receipt(tx_receipt))
 
-        # print(compile_command.strip())
-        # p = Popen(compile_command.strip(), shell=True)
-        # p.communicate()
-        #
-        # # Remove the interface files
-        # keyword = "Interface"
-        # file_list = glob.glob(os.path.join(output_directory, f"*{keyword}*"))
-        # for file_path in file_list:
-        #     os.remove(file_path)
-        #
-        # # Rename files
-        # for filename in os.listdir(output_directory):
-        #     if filename.split('.')[-1] == 'bin':
-        #         os.rename(os.path.join(output_directory, filename), os.path.join(output_directory, f'{contract_name}.bin'))
-        #     elif filename.split('.')[-1] == 'abi':
-        #         os.rename(os.path.join(output_directory, filename), os.path.join(output_directory, f'{contract_name}.abi'))
+
 
     def get_contract_abi_bin(self, contract_abi_path, contract_bin_path):
         contract_instance = {}
@@ -107,21 +87,10 @@ class Web3_Eth:
             print(f'Account not valid')
             exit(-1)
 
-        # transaction = self.w3.eth.contract(abi=interface['abi'],
-        #     bytecode=interface['bin']).constructor().build_transaction(
-        #     {
-        #         'chainId': 1337,  # Ganache chain id
-        #         'nonce': self.getTransactionCount(user),
-        #         # 'value': 0,
-        #     }
-        # )
-
-        # ContractInit = self.w3.eth.contract(abi=interface['abi'],bytecode=interface['bin']).constructor(*[type(arg) for arg in constructor_params])
-        # ContractInit = ContractInit.encode_input(constructor_params)
-
         transaction = self.w3.eth.contract(abi=interface['abi'],
             bytecode=interface['bin']).constructor(*constructor_params).build_transaction(
             {
+                'from': user.address,
                 'chainId': 1337,  # Ganache chain id
                 'nonce': self.getTransactionCount(user),
                 'value': value,
@@ -135,7 +104,6 @@ class Web3_Eth:
         tx_receipt = self.waitForTransactionReceipt(tx_hash)
 
         contract_address = self.getContractAddressFromTxReceipt(tx_receipt)
-
 
         store_var_contract = self.w3.eth.contract(address=contract_address, abi=interface["abi"])
         # print(f'address is {contract_address}')
@@ -174,3 +142,6 @@ class Web3_Eth:
     def getTransactionCount(self, user: LocalAccount):
         # return self.w3.eth.getTransactionCount(user.address)
         return self.w3.eth.get_transaction_count(user.address)
+
+    def toCheckSumAddress(self, address):
+        return self.w3.to_checksum_address(address)
