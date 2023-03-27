@@ -27,7 +27,7 @@ web3_interface = module.Web3_Eth(ganache_url)
 ## Available functions
 ```
 class Web3_Eth
-    def __init__(self, provider: str, account=None, solidity_version='0.8.17', private_key=None, connection_timeout=600):
+    def __init__(self, provider: str, solidity_version='0.8.17', private_key=None, connection_timeout=600):
 
     def web3_connect(self, provider)
 
