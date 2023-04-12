@@ -22,6 +22,9 @@ spec.loader.exec_module(module)
 
 ganache_url = "http://127.0.0.1:8545"
 web3_interface = module.Web3_Eth(ganache_url)
+
+To connect to other blockhains, include your respective endpoint. 
+
 ```
 
 ## Available functions
